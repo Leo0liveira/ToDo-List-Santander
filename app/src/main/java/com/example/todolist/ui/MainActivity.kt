@@ -25,8 +25,30 @@ class MainActivity : AppCompatActivity() {
 
     private fun insertListeners() {
         binding.btnFloat.setOnClickListener {
-            startActivity(Intent(this, AddTaskActivity::class.java))
+            startActivityForResult(Intent(this, AddTaskActivity::class.java), CREATE_NEW_TASK)
         }
+
+        adapter.listenerEdit = {
+            val intent = Intent(this, AddTaskActivity::class.java)
+            intent.putExtra(AddTaskActivity.TASK_ID, it.id)
+            startActivityForResult(intent, CREATE_NEW_TASK)
+        }
+
+        adapter.listenerDelete = {
+            TaskDataSource.deleteTask(it)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == CREATE_NEW_TASK){
+            binding.rvTasks.adapter
+            adapter.submitList(TaskDataSource.getList())
+        }
+    }
+
+    companion object {
+        private const val CREATE_NEW_TASK = 1000
     }
 
 }
