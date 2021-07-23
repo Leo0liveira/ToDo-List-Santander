@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.rvTasks.adapter = adapter
+        updateList()
 
         insertListeners()
     }
@@ -36,15 +37,21 @@ class MainActivity : AppCompatActivity() {
 
         adapter.listenerDelete = {
             TaskDataSource.deleteTask(it)
+            updateList()
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == CREATE_NEW_TASK){
-            binding.rvTasks.adapter
-            adapter.submitList(TaskDataSource.getList())
-        }
+        if(requestCode == CREATE_NEW_TASK && resultCode == Activity.RESULT_OK)updateList()
+    }
+
+    private fun updateList() {
+        val list = TaskDataSource.getList()
+        binding.includeEmpty.emptyState.visibility = if (list.isEmpty()) View.VISIBLE
+        else View.GONE
+
+        adapter.submitList(list)
     }
 
     companion object {

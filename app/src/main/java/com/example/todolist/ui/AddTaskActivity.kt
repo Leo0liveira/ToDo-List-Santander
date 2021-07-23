@@ -80,7 +80,6 @@ class AddTaskActivity : AppCompatActivity() {
         }
     }
 
-
     companion object {
         const val TASK_ID = "task_id"
     }
